@@ -1,0 +1,2 @@
+
+Python is a high-level, interpreted, and beginner-friendly programming language.
