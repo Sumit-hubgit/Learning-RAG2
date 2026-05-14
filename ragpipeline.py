@@ -160,3 +160,60 @@ embeddings=embedding_manager.generate_embedding(texts)
 
 ##store in vectordb
 vectorStore.add_documents(chunks,embeddings)
+
+
+class RAGretriever:
+    """Hanndles query based retrival from vector store"""
+    def __init__(self, vector_store:VectorStore , embedding_manager:EmbeddingManager):
+        self.vector_store = vector_store
+        self.embedding_manager = embedding_manager
+
+    def retrieve(self,query:str, top_k:int=5,score_threshold:float=0.0)->List[Dict[str,Any]]:
+
+        """ Retrieve relevant for a query
+        query: The search query
+        top_k: Number of top k results(chunks) to return after the similarity search
+        score_threshold: Minimum similarity score threshold
+        Returns List of dictionaries containing retrieved document and metadata"""
+
+
+        print(f"Retrieveing document for searh query: {query}")
+        print(f"Top_K: {top_k} , Threshold Score:{score_threshold}")
+
+        #generate query embedding
+        query_embedding = embedding_manager.generate_embedding([query])[0]
+
+        #Search in vector Store
+        try:
+            results = self.vector_store.collection.query(
+                query_embeddings = [query_embedding.tolist()],
+                n_result = top_k
+            )
+            #process results
+            retrieved_docs=[]
+
+            if results['documents'] and results['document'][0]:
+                documents = results['document'][0]
+                metadatas = results['document'][0]
+                distances = results['documents'][0]
+                ids = results['ids'][0]
+
+                for i, (doc_id, document, metadata,distance) in enumerate(zip(ids,documents,metadatas,distances)):
+                    similarity_score = 1 - distance
+                    if similarity_score>=score_threshold:
+                        retrieved_docs.append({
+                            'id':doc_id,
+                            'content':document,
+                            'metadata':metadata,
+                            'similarity_score':similarity_score,
+                            'distance':distance,
+                            'rank':i+1
+                        })
+                print(f"Retrieved {len(retrieved_docs)} documents after filtering")
+            else:
+                print("No document found")
+            return retrieved_docs
+        
+        except Exception as e:
+            print(f"error during retrieval {e}")
+            return []
