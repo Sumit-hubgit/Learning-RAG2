@@ -1,5 +1,6 @@
 /venv
 /data/vector_store
+/.env
 
 # Python cache
 __pycache__/

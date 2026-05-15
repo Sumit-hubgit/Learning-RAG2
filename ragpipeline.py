@@ -15,6 +15,10 @@ import uuid
 from typing import List, Dict, Any, Tuple
 from sklearn.metrics.pairwise import cosine_similarity
 import os
+from langchain_groq import ChatGroq
+from dotenv import load_dotenv
+load_dotenv()
+
 #loaded the document
 
 dir_loader = DirectoryLoader(
@@ -181,21 +185,21 @@ class RAGretriever:
         print(f"Top_K: {top_k} , Threshold Score:{score_threshold}")
 
         #generate query embedding
-        query_embedding = embedding_manager.generate_embedding([query])[0]
+        query_embedding = self.embedding_manager.generate_embedding([query])[0]
 
         #Search in vector Store
         try:
             results = self.vector_store.collection.query(
                 query_embeddings = [query_embedding.tolist()],
-                n_result = top_k
+                n_results = top_k
             )
             #process results
             retrieved_docs=[]
 
-            if results['documents'] and results['document'][0]:
-                documents = results['document'][0]
-                metadatas = results['document'][0]
-                distances = results['documents'][0]
+            if results['documents'] and results['documents'][0]:
+                documents = results['documents'][0]
+                metadatas = results['metadatas'][0]
+                distances = results['distances'][0]
                 ids = results['ids'][0]
 
                 for i, (doc_id, document, metadata,distance) in enumerate(zip(ids,documents,metadatas,distances)):
@@ -217,3 +221,34 @@ class RAGretriever:
         except Exception as e:
             print(f"error during retrieval {e}")
             return []
+groq_Api_key = os.getenv("GROQ_API_KEY")
+
+llm = ChatGroq(
+    groq_api_key=groq_Api_key,
+    model="llama-3.1-8b-instant",
+    temperature=0.1,
+    max_tokens=1024
+)
+def rag_qa(query: str , retriever:RAGretriever, llm , top_k=3):
+    results = retriever.retrieve(query,top_k=top_k)
+    context = "\n\n".join([doc['content'] for doc in results]) if results else ""
+    if not context:
+        return ""
+    
+    ## generate the answer using the groq LLM
+    prompt ="""Use the folllowing context to answer the question concisely.
+    {context}
+    Question: {query}
+     Answer:
+    """
+    response = llm.invoke([prompt.format(context=context,query=query)])
+    return response.content
+retriever = RAGretriever(vectorStore, embedding_manager)
+
+answer = rag_qa(
+    "What is Position-wise Feed-Forward Networks",
+    retriever,
+    llm
+)
+
+print(answer)
