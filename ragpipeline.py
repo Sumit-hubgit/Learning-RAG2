@@ -246,7 +246,7 @@ def rag_qa(query: str , retriever:RAGretriever, llm , top_k=3):
 retriever = RAGretriever(vectorStore, embedding_manager)
 
 answer = rag_qa(
-    "What is Position-wise Feed-Forward Networks",
+    "Who wrote attention is all you need?",
     retriever,
     llm
 )
