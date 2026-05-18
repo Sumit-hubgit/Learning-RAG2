@@ -114,7 +114,7 @@ def rag_qa(query):
     ])
 
     prompt = f"""
-Use the provided context to answer the question and do not answer on your own pretrained knowledge and answer in point not in summary.
+Use the provided context only to answer the question and do not answer on your own pretrained knowledge and answer in point not in summary.
 
 Context:
 {context}
