@@ -177,9 +177,16 @@ Answer:
 # ASK QUESTIONS
 # -----------------------------
 
-query = "What is RAGA?"
+query = "Tell me about Advanced RAG. Tell me the answers in point not in summary"
 
 answer = rag_qa(query)
 
 print("\nFINAL ANSWER:\n")
 print(answer)
+
+# FINAL ANSWER:
+# 1. The development of Advanced RAG is a response to the specific shortcomings in Naive RAG.
+# 2. Advanced RAG is a stage in the RAG research paradigm, which is continuously evolving.
+# 3. The RAG research paradigm is categorized into three stages: Naive RAG, Advanced RAG, and Modular RAG.
+# 4. Figure 3 shows the three stages of the RAG research paradigm, including Advanced RAG.
+# 5. Advanced RAG is a response to the limitations o
