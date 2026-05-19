@@ -12,6 +12,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 from dotenv import load_dotenv
 
+import redis , json , hashlib
 import numpy as np
 import os
 
@@ -184,9 +185,44 @@ answer = rag_qa(query)
 print("\nFINAL ANSWER:\n")
 print(answer)
 
-# FINAL ANSWER:
-# 1. The development of Advanced RAG is a response to the specific shortcomings in Naive RAG.
-# 2. Advanced RAG is a stage in the RAG research paradigm, which is continuously evolving.
-# 3. The RAG research paradigm is categorized into three stages: Naive RAG, Advanced RAG, and Modular RAG.
-# 4. Figure 3 shows the three stages of the RAG research paradigm, including Advanced RAG.
-# 5. Advanced RAG is a response to the limitations o
+redis_client = redis.Redis(
+    host="localhost",
+    port=6379,
+    decode_responses=False
+)
+
+print("Connected to Redis")
+query_embedding = embedding_model.encode([query])
+# -----------------------------
+# EMBEDDING CACHE FUNCTION
+# -----------------------------
+
+def get_cached_embedding(text):
+
+    # Create unique hash key
+    key = f"embedding:{hashlib.md5(text.encode()).hexdigest()}"
+
+    # Check Redis cache
+    cached_embedding = redis_client.get(key)
+
+    if cached_embedding:
+
+        print("Embedding fetched from Redis cache")
+
+        return np.frombuffer(
+            cached_embedding,
+            dtype=np.float32
+        )
+
+    # Generate embedding
+    embedding = embedding_model.encode(text)
+
+    # Store in Redis
+    redis_client.set(
+        key,
+        embedding.astype(np.float32).tobytes()
+    )
+
+    print("Embedding stored in Redis")
+
+    return embedding
