@@ -416,7 +416,7 @@ Answer:
 # ASK QUESTIONS
 # -----------------------------
 
-query = "Who are the authors of Attention is all you need research Paper? "
+query = "What is Positional Encoding"
 
 answer = rag_qa(query)
 
