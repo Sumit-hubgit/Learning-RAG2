@@ -1,6 +1,6 @@
-# 📚 Learning-RAG
+# 📚 Advanced-RAG-Pipeline
 
-A simple Retrieval-Augmented Generation (RAG) pipeline built using LangChain, ChromaDB, Sentence Transformers, and Groq LLMs.
+A Advanced Retrieval-Augmented Generation (RAG) pipeline built using LangChain, Redis Vector Store, Sentence Transformers, BM25, Semantic Search, and Groq LLMs.
 This project demonstrates how Large Language Models can answer questions from custom PDF documents using semantic search and vector embeddings.
 
 ---
@@ -280,11 +280,9 @@ python ragpipeline.py
 * Metadata Filtering
 * Streaming Responses
 * Reranking
-* Web UI Integration
 * Multi-document Support
 * Conversational Memory
 * MMR Retrieval
-* API Deployment
 * Dockerization
 
 ---
