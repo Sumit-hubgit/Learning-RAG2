@@ -11,4 +11,3 @@ python-dotenv
 groq
 redis
 qdrant
-crossencoder
