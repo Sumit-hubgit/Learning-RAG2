@@ -16,6 +16,8 @@ import redis , json , hashlib
 import numpy as np
 import os
 
+
+
 # -----------------------------
 # LOAD ENV VARIABLES
 # -----------------------------
