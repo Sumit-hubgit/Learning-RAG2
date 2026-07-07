@@ -70,6 +70,7 @@ dir_loader = DirectoryLoader(
 
 pdf_load = dir_loader.load()
 
+
 print("\nLoaded PDF Documents:\n")
 for doc in pdf_load:
     print(doc.metadata)
