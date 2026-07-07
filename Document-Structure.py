@@ -6,7 +6,6 @@ from langchain_community.document_loaders import (
 )
 
 import os
-
 # -----------------------------------
 # Create a LangChain Document Object
 # -----------------------------------
